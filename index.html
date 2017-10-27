@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>timer.watch - a simple timer countdown</title>
+    <meta name="description" content="A very simple and cute countdown timer">
+    <meta name="author" content="Karl Adler">
+    <link href="https://fonts.googleapis.com/css?family=Inconsolata" rel="stylesheet">
+
+    <!--[if lt IE 9]>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.js"></script>
+  <![endif]-->
+</head>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        height: 100vh;
+    }
+
+    .centered {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+    }
+
+    .huge {
+        font-size: 20vmin;
+        font-family: 'Inconsolata', monospace;
+    }
+
+    .wrapper {
+        height: 95vmin;
+        width: 95vmin;
+        overflow: hidden;
+    }
+
+    .circle-chart {
+        width: 95vmin;
+        height: 95vmin;
+    }
+
+    .circle-chart__circle {
+        transition: stroke-dasharray 1s linear;
+        transform: rotate(-90deg);
+        transform-origin: center;
+    }
+
+    .circle-chart__circle--negative {
+        transform: rotate(-90deg) scale(1, -1);
+        /* 1, 2, 3 */
+    }
+
+    .circle-chart__info {
+        animation: circle-chart-appear .5s forwards;
+        opacity: 0;
+        transform: translateY(0.3em);
+    }
+
+    @keyframes circle-chart-fill {
+        to {
+            stroke-dasharray: 0 100;
+        }
+    }
+
+    @keyframes circle-chart-appear {
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+
+<body>
+    <div class="centered huge wrapper">
+
+        <svg class="circle-chart" viewbox="0 0 100 100" width="100" height="100" xmlns="http://www.w3.org/2000/svg">
+            <circle class="circle-chart__background" stroke="#efefef" stroke-width="2" fill="none" cx="50" cy="50"
+                r="48" />
+            <circle class="circle-chart__circle" id="progress-circle" stroke="#00acc1" stroke-width="2" stroke-dasharray="0,314.1" stroke-linecap="round"
+                fill="none" cx="50" cy="50" r="48" />
+            <g class="circle-chart__info">
+                <text class="circle-chart__percent" id="circle-chart-text" x="16.91549431" y="15.5" alignment-baseline="central" text-anchor="middle"
+                    font-size="8"></text>
+            </g>
+        </svg>
+        <span id="timer" class="centered"></span>
+
+    </div>
+    <script>
+        var dayFactor = 1000 * 60 * 60 * 24;
+        var hoursFactor = 1000 * 60 * 60;
+        var minutesFactor = 1000 * 60;
+        var secondsFactor = 1000;
+
+        var url = new URL(location.href);
+        var d = parseInt(url.searchParams.get('d'), 10) * dayFactor || 0;
+        var h = parseInt(url.searchParams.get('h'), 10) * hoursFactor || 0;
+        var m = (parseInt(url.searchParams.get('m'), 10) * minutesFactor) || 15;
+        var s = parseInt(url.searchParams.get('s'), 10) * secondsFactor || 0;
+
+        var start = new Date().getTime();
+        var countDownDate = start + (d + h + m + s);
+
+        var x = setInterval(function () {
+            var now = new Date().getTime();
+            var distance = countDownDate - now;
+            var progress = ((now - start) / (countDownDate - start)) * 100;
+            console.log(progress);
+
+
+            var days = Math.floor(distance / dayFactor);
+            var hours = Math.floor((distance % dayFactor) / hoursFactor);
+            var minutes = Math.floor((distance % hoursFactor) / minutesFactor);
+            var seconds = Math.floor((distance % minutesFactor) / secondsFactor);
+
+            var daysOut = days > 0 ? 'days: ' + days + ' - ' : '';
+            var hoursOut = ('00' + hours).substr(-2, 2) + ':';
+            var minutesOut = ('00' + minutes).substr(-2, 2) + ':';
+            var secondsOut = ('00' + seconds).substr(-2, 2);
+
+            document.getElementById('timer').innerHTML = daysOut + hoursOut + minutesOut + secondsOut;
+
+            document.getElementById('progress-circle').setAttribute('stroke-dasharray', progress * Math.PI + ',314.2');
+
+            if (distance < 0) {
+                clearInterval(x);
+                document.getElementById('timer').innerHTML = 'finished';
+            }
+        }, 1000);
+    </script>
+</body>
+
+</html>
