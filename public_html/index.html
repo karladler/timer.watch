@@ -52,28 +52,8 @@
         transform-origin: center;
     }
 
-    .circle-chart__circle--negative {
-        transform: rotate(-90deg) scale(1, -1);
-        /* 1, 2, 3 */
-    }
-
-    .circle-chart__info {
-        animation: circle-chart-appear .5s forwards;
-        opacity: 0;
-        transform: translateY(0.3em);
-    }
-
-    @keyframes circle-chart-fill {
-        to {
-            stroke-dasharray: 0 100;
-        }
-    }
-
-    @keyframes circle-chart-appear {
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
+    .digits {
+        cursor: pointer;
     }
 </style>
 
@@ -83,14 +63,10 @@
         <svg class="circle-chart" viewbox="0 0 100 100" width="100" height="100" xmlns="http://www.w3.org/2000/svg">
             <circle class="circle-chart__background" stroke="#efefef" stroke-width="2" fill="none" cx="50" cy="50"
                 r="48" />
-            <circle class="circle-chart__circle" id="progress-circle" stroke="#00acc1" stroke-width="2" stroke-dasharray="0,314.1" stroke-linecap="round"
-                fill="none" cx="50" cy="50" r="48" />
-            <g class="circle-chart__info">
-                <text class="circle-chart__percent" id="circle-chart-text" x="16.91549431" y="15.5" alignment-baseline="central" text-anchor="middle"
-                    font-size="8"></text>
-            </g>
+            <circle class="circle-chart__circle" id="progress-circle" stroke="#00acc1" stroke-width="2" stroke-linecap="round"
+                fill="none" cx="50" cy="50" r="48" stroke-dasharray="0,300" />
         </svg>
-        <span id="timer" class="centered"></span>
+        <span id="timer" class="centered digits" onClick="toggle()"></span>
 
     </div>
     <script>
@@ -99,41 +75,70 @@
         var minutesFactor = 1000 * 60;
         var secondsFactor = 1000;
 
-        var url = new URL(location.href);
-        var d = parseInt(url.searchParams.get('d'), 10) * dayFactor || 0;
-        var h = parseInt(url.searchParams.get('h'), 10) * hoursFactor || 0;
-        var m = (parseInt(url.searchParams.get('m'), 10) * minutesFactor) || 15;
-        var s = parseInt(url.searchParams.get('s'), 10) * secondsFactor || 0;
+        var left;
+        var duration;
+        var countDownDate;
+        var start;
 
-        var start = new Date().getTime();
-        var countDownDate = start + (d + h + m + s);
+        reset();
+        go();
 
-        var x = setInterval(function () {
+        function reset() {
+            // TODO: proper reset  + UI
+            var url = new URL(location.href);
+            var d = parseInt(url.searchParams.get('d') || 0, 10) * dayFactor;
+            var h = parseInt(url.searchParams.get('h') || 0, 10) * hoursFactor;
+            var m = (parseInt(url.searchParams.get('m') || 0, 10) * minutesFactor);
+            var s = parseInt(url.searchParams.get('s') || 0, 10) * secondsFactor;
+
+            duration = (d + h + m + s);
+            if (duration === 0) {
+                duration = 15 * minutesFactor;
+            }
+            left = duration;
+        }
+
+        function toggle() {
+            if (!timer) {
+                countDownDate = new Date().getTime() + left;
+                timer = setInterval(iteration, 1000);
+            } else {
+                var now = new Date().getTime();
+                left = countDownDate - now; // set new duration by distance
+
+                clearInterval(timer);
+                timer = false;
+            }
+        }
+
+        function go() {
+            start = new Date().getTime();
+            countDownDate = start + duration;
+            timer = setInterval(iteration, 1000);
+        }
+
+        function iteration() {
             var now = new Date().getTime();
             var distance = countDownDate - now;
-            var progress = ((now - start) / (countDownDate - start)) * 100;
-            console.log(progress);
-
-
+            var progress = ((duration - (distance-1000)) / duration) * 100;
             var days = Math.floor(distance / dayFactor);
             var hours = Math.floor((distance % dayFactor) / hoursFactor);
             var minutes = Math.floor((distance % hoursFactor) / minutesFactor);
             var seconds = Math.floor((distance % minutesFactor) / secondsFactor);
 
-            var daysOut = days > 0 ? 'days: ' + days + ' - ' : '';
+            var daysOut = days > 0 ? days + ' days &shy;' : '';
             var hoursOut = ('00' + hours).substr(-2, 2) + ':';
             var minutesOut = ('00' + minutes).substr(-2, 2) + ':';
             var secondsOut = ('00' + seconds).substr(-2, 2);
 
             document.getElementById('timer').innerHTML = daysOut + hoursOut + minutesOut + secondsOut;
-
-            document.getElementById('progress-circle').setAttribute('stroke-dasharray', progress * Math.PI + ',314.2');
+            document.getElementById('progress-circle').setAttribute('stroke-dasharray', progress * 3 + ',300');
 
             if (distance < 0) {
-                clearInterval(x);
+                clearInterval(timer);
                 document.getElementById('timer').innerHTML = 'finished';
             }
-        }, 1000);
+        }
     </script>
 </body>
 
