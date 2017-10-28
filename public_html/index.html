@@ -4,6 +4,8 @@
 <head>
     <meta charset="utf-8">
     <title>timer.watch - a simple timer countdown</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="description" content="A very simple and cute countdown timer">
     <meta name="author" content="Karl Adler">
     <link href="https://fonts.googleapis.com/css?family=Inconsolata" rel="stylesheet">
@@ -47,7 +49,7 @@
     }
 
     .circle-chart__circle {
-        transition: stroke-dasharray 1s linear;
+        transition: stroke-dasharray .1s linear;
         transform: rotate(-90deg);
         transform-origin: center;
     }
@@ -101,7 +103,7 @@
         function toggle() {
             if (!timer) {
                 countDownDate = new Date().getTime() + left;
-                timer = setInterval(iteration, 1000);
+                timer = setInterval(iteration, 100);
             } else {
                 var now = new Date().getTime();
                 left = countDownDate - now; // set new duration by distance
@@ -114,7 +116,7 @@
         function go() {
             start = new Date().getTime();
             countDownDate = start + duration;
-            timer = setInterval(iteration, 1000);
+            timer = setInterval(iteration, 100);
         }
 
         function iteration() {
