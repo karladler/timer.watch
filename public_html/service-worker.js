@@ -2,7 +2,8 @@ var CACHE_NAME = 'static-cache';
 
 var urlsToCache = [
   '.',
-  'index.html'
+  'index.html',
+  'https://fonts.googleapis.com/css?family=Inconsolata'
 ];
 
 self.addEventListener('install', function(event) {
