@@ -3,7 +3,6 @@ var CACHE_NAME = 'static-cache';
 var urlsToCache = [
   '.',
   'index.html',
-  'https://fonts.gstatic.com',
   'manifest.json'
 ];
 
