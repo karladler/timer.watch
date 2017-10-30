@@ -3,7 +3,7 @@ var CACHE_NAME = 'static-cache';
 var urlsToCache = [
   '.',
   'index.html',
-  'https://fonts.googleapis.com/css?family=Inconsolata',
+  'https://fonts.gstatic.com',
   'manifest.json'
 ];
 
