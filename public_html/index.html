@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <title>timer.watch - a simple timer countdown</title>
     <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="A very simple and cute countdown timer">
     <meta name="theme-color" content="#66bf13">
     <meta name="author" content="Karl Adler">
@@ -42,6 +42,16 @@
         font-family: 'Inconsolata', monospace;
     }
 
+    .small, .small a {
+        font-size: 0.5em;
+        color: #efefef;
+    }
+
+    .bottom {
+        position: absolute;
+        bottom: 1px;
+    }
+
     .wrapper {
         height: 100vmin;
         width: 100vmin;
@@ -66,19 +76,18 @@
 </style>
 
 <body>
-    <div class="centered huge wrapper">
-
+    <div class="centered wrapper">
         <svg class="circle-chart" viewbox="0 0 100 100" width="100" height="100" xmlns="http://www.w3.org/2000/svg">
             <circle class="circle-chart__background" stroke="#efefef" stroke-width="2" fill="none" cx="50" cy="50"
                 r="48" />
             <circle class="circle-chart__circle" id="progress-circle" stroke="#66bf13" stroke-width="2" stroke-linecap="round"
                 fill="none" cx="50" cy="50" r="48" stroke-dasharray="0,300" />
         </svg>
-        <span id="timer" class="centered digits" onClick="toggle()"></span>
+        <span id="timer" class="centered digits huge" onClick="toggle()"></span>
 
         <noscript>please enable javascript to start the timer</noscript>
-
     </div>
+    <a class="small bottom" href="https://www.freepik.com/free-photo/morning-wake-time-alarm-sleep_1043473.htm">Splashscreen by Freepik</a>
     <script>
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('service-worker.js')
