@@ -2,8 +2,8 @@ var CACHE_NAME = 'static-cache';
 
 var urlsToCache = [
   '.',
-  'index.html',
-  'manifest.json'
+  './index.html',
+  './manifest.json'
 ];
 
 self.addEventListener('install', function(event) {
