@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>timer.watch - a simple timer countdown</title>
+    <title>&#x1F550; timer.watch - a simple timer countdown</title>
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="A very simple and cute countdown timer">
@@ -13,8 +13,6 @@
     <!--[if lt IE 9]>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.js"></script>
     <![endif]-->
-
-
 </head>
 <style>
     * {
@@ -86,7 +84,6 @@
 
         <noscript>please enable javascript to start the timer</noscript>
     </div>
-    <a class="small bottom" href="https://www.freepik.com/free-photo/morning-wake-time-alarm-sleep_1043473.htm">Splashscreen by Freepik</a>
     <script>
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('service-worker.js')
@@ -107,6 +104,8 @@
         var duration;
         var countDownDate;
         var start;
+
+        var clocks = ['🕐','🕑','🕒','🕓','🕔','🕕','🕖','🕗','🕘','🕙','🕚','🕛'].reverse();
 
         reset();
         go();
@@ -145,6 +144,7 @@
             timer = setInterval(iteration, 100);
         }
 
+        var counter = 0;
         function iteration() {
             var now = new Date().getTime();
             var distance = countDownDate - now;
@@ -160,11 +160,19 @@
             var secondsOut = ('00' + seconds).substr(-2, 2);
 
             document.getElementById('timer').innerHTML = daysOut + hoursOut + minutesOut + secondsOut;
+
+            if (minutes < 1) {
+                document.title = secondsOut + ' s';
+            } else {
+               document.title = clocks[seconds % 12];
+            }
+
             document.getElementById('progress-circle').setAttribute('stroke-dasharray', progress * 3 + ',300');
 
             if (distance < 0) {
                 clearInterval(timer);
                 document.getElementById('timer').innerHTML = 'finished';
+                document.title = 'finished';
             }
         }
     </script>
