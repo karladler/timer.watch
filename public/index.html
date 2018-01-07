@@ -2,6 +2,15 @@
 <html lang="en">
 
 <head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-109503004-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-109503004-1');
+    </script>
     <meta charset="utf-8">
     <title>&#x1F550; timer.watch - a simple timer countdown</title>
     <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -13,16 +22,6 @@
     <!--[if lt IE 9]>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.js"></script>
     <![endif]-->
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-109503004-1"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-
-        gtag('config', 'UA-109503004-1');
-    </script>
-
 </head>
 <style>
     * {
@@ -83,6 +82,7 @@
 </style>
 
 <body>
+    <script async src="./NoSleep.min.js"></script>
     <div class="centered wrapper">
         <svg class="circle-chart" viewbox="0 0 100 100" width="100" height="100" xmlns="http://www.w3.org/2000/svg">
             <circle class="circle-chart__background" stroke="#efefef" stroke-width="2" fill="none" cx="50" cy="50"
@@ -116,6 +116,15 @@
         var start;
 
         var clocks = ['🕐','🕑','🕒','🕓','🕔','🕕','🕖','🕗','🕘','🕙','🕚','🕛'].reverse();
+
+        var noSleep = new NoSleep();
+
+        function enableNoSleep() {
+            noSleep.enable();
+            document.removeEventListener('click', enableNoSleep, false);
+        }
+
+        document.addEventListener('click', enableNoSleep, false);
 
         reset();
         go();

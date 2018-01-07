@@ -2,6 +2,7 @@ var CACHE_NAME = 'static-cache';
 
 var urlsToCache = [
     '.',
+    './NoSleep.min.js',
     './index.html',
     './manifest.json'
 ];
