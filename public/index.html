@@ -121,13 +121,13 @@
 
         function enableNoSleep() {
             noSleep.enable();
-            document.removeEventListener('click', enableNoSleep, false);
+            //document.removeEventListener('click', enableNoSleep, false);
         }
 
-        document.addEventListener('click', enableNoSleep, false);
+        document.addEventListener('click', go, false);
 
         reset();
-        go();
+        // go();
 
         function reset() {
             // TODO: proper reset  + UI
@@ -158,6 +158,9 @@
         }
 
         function go() {
+            document.removeEventListener('click', go, false);
+
+            noSleep.enable();
             start = new Date().getTime();
             countDownDate = start + duration;
             timer = setInterval(iteration, 100);
