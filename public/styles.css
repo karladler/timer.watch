@@ -1,0 +1,55 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+}
+
+.centered {
+    position: absolute;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-self: center;
+}
+
+.huge {
+    font-size: 18vmin;
+    font-family: "Courier New", Courier, monospace;
+}
+
+.small, .small a {
+    font-size: 0.5em;
+    color: #efefef;
+}
+
+.bottom {
+    position: absolute;
+    bottom: 1px;
+}
+
+.wrapper {
+    height: 100vmin;
+    width: 100vmin;
+    overflow: hidden;
+}
+
+.circle-chart {
+    width: 95vmin;
+    height: 95vmin;
+    margin: 2.5vmin;
+}
+
+.circle-chart__circle {
+    transition: stroke-dasharray .1s linear;
+    transform: rotate(-90deg);
+    transform-origin: center;
+}
+
+.digits {
+    cursor: pointer;
+}
