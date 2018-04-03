@@ -45,7 +45,6 @@ body {
 }
 
 .circle-chart__circle {
-    transition: stroke-dasharray .1s linear;
     transform: rotate(-90deg);
     transform-origin: center;
 }

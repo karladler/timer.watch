@@ -46,12 +46,12 @@ function reset() {
 function toggle() {
     if (!timer) {
         countDownDate = new Date().getTime() + left;
-        timer = setInterval(iteration, 100);
+        timer = window.requestAnimationFrame(iteration);
     } else {
         var now = new Date().getTime();
         left = countDownDate - now; // set new duration by distance
 
-        clearInterval(timer);
+        window.cancelAnimationFrame(timer);
         timer = false;
         noSleep.disable();
     }
@@ -61,18 +61,19 @@ function go() {
     document.removeEventListener('click', go, false);
 
     noSleep.enable();
-    start = new Date().getTime();
+    start = performance.now();
     countDownDate = start + duration;
-    timer = setInterval(iteration, 100);
+    timer = window.requestAnimationFrame((t) => iteration(t));
 }
 
 function setDisplay(content) {
-    document.getElementById('timer').innerHTML = content;
+    window.requestAnimationFrame(() => {
+        document.getElementById('timer').innerHTML = content;
+    });
 }
 
 var counter = 0;
-function iteration() {
-    var now = new Date().getTime();
+function iteration(now) {
     var distance = countDownDate - now;
     var progress = ((duration - (distance-1000)) / duration) * 100;
     var days = Math.floor(distance / dayFactor);
@@ -96,9 +97,11 @@ function iteration() {
     document.getElementById('progress-circle').setAttribute('stroke-dasharray', progress * 3 + ',300');
 
     if (distance < 0) {
-        clearInterval(timer);
+        window.cancelAnimationFrame(timer);
         noSleep.disable();
         setDisplay('finished');
         document.title = 'finished';
+    } else {
+        window.requestAnimationFrame(iteration);
     }
 }

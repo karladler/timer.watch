@@ -6,6 +6,7 @@ var urlsToCache = [
     './main.js',
     './styles.css',
     './index.html',
+    './images/icon256x256.png',
     './manifest.json'
 ];
 
