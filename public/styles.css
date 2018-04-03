@@ -36,6 +36,7 @@ body {
     height: 100vmin;
     width: 100vmin;
     overflow: hidden;
+    touch-action: none;
 }
 
 .circle-chart {

@@ -3,6 +3,7 @@ var CACHE_NAME = 'static-cache';
 var urlsToCache = [
     '.',
     './NoSleep.min.js',
+    './zingtouch.min.js',
     './main.js',
     './styles.css',
     './index.html',
