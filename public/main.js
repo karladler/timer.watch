@@ -13,10 +13,12 @@ var minutesFactor = 1000 * 60;
 var secondsFactor = 1000;
 var oneDegreeFactor = 1/24;
 
-var left;
+var distance;
 var duration;
 var countDownDate;
 var start;
+var timer;
+var state = 'init';
 
 var clocks = ['🕐','🕑','🕒','🕓','🕔','🕕','🕖','🕗','🕘','🕙','🕚','🕛'].reverse();
 
@@ -25,19 +27,37 @@ var ztr = new ZingTouch.Region(document.body);
 var clockElement = document.body.firstElementChild;
 var rotate = new ZingTouch.Rotate();
 
-ztr.bind(clockElement, rotate, function(e) {
-    var angle = Math.max(e.detail.distanceFromOrigin + 360, 0);
-    duration = oneDegreeFactor * angle * minutesFactor;
+var startButton = document.getElementById('start-button');
+var pauseButton = document.getElementById('pause-button');
+var resetButton = document.getElementById('reset-button');
+var hintText = document.getElementById('hint');
 
-    setDisplay(getFormatedTime(duration));
-});
-
-document.addEventListener('click', go, false);
-document.addEventListener('touchend', go, false);
+startButton.addEventListener('click', go, false);
+pauseButton.addEventListener('click', pause, false);
+resetButton.addEventListener('click', reset, false);
 
 reset();
 
 function reset() {
+    ztr.bind(clockElement, rotate, function(e) {
+        var angle = Math.max(e.detail.distanceFromOrigin + 360, 0);
+        duration = oneDegreeFactor * angle * minutesFactor;
+
+        setDisplay(getFormatedTime(duration));
+    });
+
+    if (state === 'running') {
+        window.cancelAnimationFrame(timer);
+        toggleVisibility(startButton, pauseButton);
+        toggleVisibility(hintText, resetButton);
+    }
+
+    distance = undefined;
+    countDownDate = undefined;
+    start = undefined;
+    timer = undefined;
+    state = 'init';
+
     if (!duration) {
         var url = new URL(location.href);
         var d = parseInt(url.searchParams.get('d') || 0, 10) * dayFactor;
@@ -48,50 +68,59 @@ function reset() {
         duration = (d + h + m + s);
     }
 
-    if (duration === 0) {
+    if (!duration || duration === 0) {
         duration = 15 * minutesFactor;
     }
-    left = duration;
 
-    setDisplay('▶');
+    setDisplay(getFormatedTime(duration));
+
+    document.getElementById('progress-circle').setAttribute('stroke-dasharray', '0,300');
 }
 
-function toggle() {
-    if (!timer) {
-        countDownDate = performance.now() + left;
-        timer = window.requestAnimationFrame(iteration);
-    } else {
-        var now = performance.now();
-        left = countDownDate - now; // set new duration by distance
+function pause() {
+    state = 'paused';
 
-        window.cancelAnimationFrame(timer);
-        timer = false;
-        noSleep.disable();
+    toggleVisibility(startButton, pauseButton);
+    noSleep.disable();
+
+    window.cancelAnimationFrame(timer);
+}
+
+function toggleVisibility(e1, e2) {
+    if (e1.classList.contains('hidden')) {
+        e1.classList.remove('hidden');
+        e2.classList.add('hidden');
+    } else {
+        e1.classList.add('hidden');
+        e2.classList.remove('hidden');
     }
 }
 
 function go() {
-    document.removeEventListener('click', go, false);
-    document.removeEventListener('touchend', go, false);
-    ztr.unbind(clockElement);
+    if (state === 'init') {
+        toggleVisibility(hintText, resetButton);
+    }
 
+    state = 'running';
+
+    toggleVisibility(startButton, pauseButton);
+
+    ztr.unbind(clockElement);
     noSleep.enable();
     start = performance.now();
-    countDownDate = start + duration;
+    countDownDate = distance < duration ? start + distance : start + duration;
     timer = window.requestAnimationFrame((t) => iteration(t));
 }
 
 function setDisplay(content) {
-    window.requestAnimationFrame(() => {
-        document.getElementById('timer').innerHTML = content;
-    });
+    document.getElementById('timer').innerHTML = content;
 }
 
-function getFormatedTime(distance) {
-    var days = Math.floor(distance / dayFactor);
-    var hours = Math.floor((distance % dayFactor) / hoursFactor);
-    var minutes = Math.floor((distance % hoursFactor) / minutesFactor);
-    var seconds = Math.floor((distance % minutesFactor) / secondsFactor);
+function getFormatedTime(seconds) {
+    var days = Math.floor(seconds / dayFactor);
+    var hours = Math.floor((seconds % dayFactor) / hoursFactor);
+    var minutes = Math.floor((seconds % hoursFactor) / minutesFactor);
+    var seconds = Math.floor((seconds % minutesFactor) / secondsFactor);
 
     var daysOut = days > 0 ? days + ' days &shy;' : '';
     var hoursOut = ('00' + hours).substr(-2, 2) + ':';
@@ -102,25 +131,25 @@ function getFormatedTime(distance) {
 }
 
 function iteration(now) {
-    var distance = countDownDate - now;
+    distance = countDownDate - now;
     var progress = ((duration - (distance-1000)) / duration) * 100;
 
     setDisplay(getFormatedTime(distance));
-/* TODO: reimplement the title gimmick
-    if (minutes < 1) {
-        document.title = secondsOut + ' s';
-    } else {
-       document.title = clocks[seconds % 12];
+
+    // TODO: proper title handling
+    if (distance < 60000) {
+        var seconds = Math.floor((distance % minutesFactor) / secondsFactor);
+        document.title = ('00' + seconds).substr(-2, 2) + ' s';
     }
-*/
+
     document.getElementById('progress-circle').setAttribute('stroke-dasharray', progress * 3 + ',300');
 
-    if (distance < 0) {
+    if (distance <= 0) {
         window.cancelAnimationFrame(timer);
         noSleep.disable();
         setDisplay('finished');
         document.title = 'finished';
     } else {
-        window.requestAnimationFrame(iteration);
+        timer = window.requestAnimationFrame(iteration);
     }
 }

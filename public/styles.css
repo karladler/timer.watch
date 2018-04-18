@@ -53,3 +53,38 @@ body {
 .digits {
     cursor: pointer;
 }
+
+.control {
+    color: #efefef;
+    font-size: 28vmin;
+    text-shadow: 0.1em 0.05em 0.2em rgba(100,100,100, 0.3), 2px 2px 0px #ddd;
+    transition: all linear 0.1s;
+}
+
+.control:hover {
+    color: #eee;
+    text-shadow: 0.05em 0.025em 0.1em rgba(100,100,100, 0.5), 2px 2px 0px #ddd;
+}
+
+.control:active {
+    color: #eee;
+    text-shadow: 0 0 2px rgba(100,100,100, 1);
+    margin: 3px 5px;
+}
+
+.lower.control {
+    transform: translateY(70%);
+}
+
+.upper.control {
+    transform: translateY(-50%);
+}
+
+.hidden {
+    display: none;
+}
+
+.hint {
+    top: 25%;
+    color: #999;
+}
