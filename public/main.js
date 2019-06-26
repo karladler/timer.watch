@@ -32,12 +32,15 @@ var pauseButton = document.getElementById('pause-button');
 var resetButton = document.getElementById('reset-button');
 var hintText = document.getElementById('hint');
 
-startButton.addEventListener('click', go, false);
-startButton.addEventListener('touchend', go, false);
-pauseButton.addEventListener('click', pause, false);
-pauseButton.addEventListener('touchend', pause, false);
-resetButton.addEventListener('click', reset, false);
-resetButton.addEventListener('touchend', reset, false);
+startButton.addEventListener('click', go);
+// startButton.addEventListener('touchend', go);
+
+ztr.bind(startButton, 'tap', go, false);
+
+pauseButton.addEventListener('click', pause);
+pauseButton.addEventListener('touchend', pause);
+resetButton.addEventListener('click', reset);
+resetButton.addEventListener('touchend', reset);
 
 reset();
 

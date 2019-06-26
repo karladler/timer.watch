@@ -1,0 +1,5 @@
+- favicon
+- big scaled icon
+- readme md
+- "how to use"
+- icons at least 512px
